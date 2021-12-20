@@ -45,6 +45,10 @@ BON_fnc_SpawnFlag = {
 	[_defendFlag, 1, true] spawn BIS_fnc_animateFlag;
 	[_defendFlag, _defendLocation, _defendRadius] spawn BON_fnc_CheckArea; // Start Loop
 	[_defendFlag, _captureSpeed] spawn BON_fnc_CaptureFlag;
+	
+	
+	//Spawn Enemys
+	//...
 
 };
 
