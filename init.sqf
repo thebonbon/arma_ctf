@@ -103,5 +103,3 @@ BON_fnc_CaptureFlag = {
 		};
 	}
 };
-
-[50, 1] spawn BON_fnc_SpawnFlag;
