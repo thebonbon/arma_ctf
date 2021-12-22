@@ -86,7 +86,10 @@ BON_fnc_CaptureFlag = {
 					};
 				} else {
 					[_flag, _nextUpFlagPhase, _captureSpeed] call BIS_fnc_animateFlag;
-					if (flagAnimationPhase _flag == 1) exitWith {["dT1","SUCCEEDED"] call BIS_fnc_taskSetState;} ;
+					if (flagAnimationPhase _flag == 1) exitWith {	// WIN
+						["dT1","SUCCEEDED"] call BIS_fnc_taskSetState;
+						deleteMarker "DefendMarker";
+					} ;
 				};
 				
 			};	
