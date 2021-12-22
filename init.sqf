@@ -21,7 +21,7 @@ BON_fnc_SpawnFlag = {
 	CapturingSide = sideUnknown;
 
 	_allLocationTypes = ["NameVillage","NameCity","NameCityCapital"];
-	_allLocations = nearestLocations [[0,0,0], _allLocationTypes, 1000000]; //Change Player to Pos?
+	_allLocations = nearestLocations [[0,0,0], _allLocationTypes, 1000000];
 
 	if (count _allLocations < 1) exitWith {systemChat "Failed to spawn Flag (no pos found)";};
 
@@ -41,12 +41,11 @@ BON_fnc_SpawnFlag = {
 	//Create Flagpole
 	_defendFlag = "FlagPole_F" createVehicle position _defendLocation;
 	_defendFlag setFlagTexture "\A3\Data_F\Flags\Flag_CSAT_CO.paa";
-	_defendFlag setFlagSide east;
+	_defendFlag setVariable ["BON_flagSide", east, true];
 	[_defendFlag, 1, true] spawn BIS_fnc_animateFlag;
 	[_defendFlag, _defendLocation, _defendRadius] spawn BON_fnc_CheckArea; // Start Loop
 	[_defendFlag, _captureSpeed] spawn BON_fnc_CaptureFlag;
-	
-	
+
 	//Spawn Enemys
 	//...
 
@@ -79,10 +78,10 @@ BON_fnc_CaptureFlag = {
 			_nextDownFlagPhase = flagAnimationPhase _flag - (10 / _captureSpeed);
 			//Capture ALLY
 			if (CapturingSide == west) then {
-				if (flagSide _flag == east) then {
+				if ((_flag getVariable "BON_flagSide") == east) then {
 					[_flag, _nextDownFlagPhase, _captureSpeed] call BIS_fnc_animateFlag;
 					if (flagAnimationPhase _flag == 0) then {
-						_flag setFlagSide west;
+						_flag setVariable ["BON_flagSide", west, true];
 						_flag setFlagTexture "\A3\Data_F\Flags\Flag_NATO_CO.paa";
 					};
 				} else {
@@ -93,10 +92,10 @@ BON_fnc_CaptureFlag = {
 			};	
 			//Capture OPFOR
 			if (CapturingSide == east) then {
-				if (flagSide _flag == west) then {
+				if ((_flag getVariable "BON_flagSide") == west) then {
 					[_flag, _nextDownFlagPhase, _captureSpeed] call BIS_fnc_animateFlag;
 					if (flagAnimationPhase _flag == 0) then {
-						_flag setFlagSide east;
+						_flag setVariable ["BON_flagSide", east, true];
 						_flag setFlagTexture "\A3\Data_F\Flags\Flag_CSAT_CO.paa";
 					};
 				} else {
