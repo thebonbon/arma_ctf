@@ -89,7 +89,7 @@ BON_fnc_CaptureFlag = {
 					if (flagAnimationPhase _flag == 1) exitWith {	// WIN
 						["dT1","SUCCEEDED"] call BIS_fnc_taskSetState;
 						deleteMarker "DefendMarker";
-					} ;
+					};
 				};
 				
 			};	
