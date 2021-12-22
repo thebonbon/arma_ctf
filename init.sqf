@@ -24,39 +24,39 @@ BON_fnc_SpawnFlag = {
 	_allLocations = nearestLocations [[0,0,0], _allLocationTypes, 1000000];
 
 	if (count _allLocations < 1) exitWith {systemChat "Failed to spawn Flag (no pos found)";};
-
-	_defendLocation = selectRandom _allLocations;
+	_randomCityPos = position (selectRandom _allLocations);
+	_defendPosition = [_randomCityPos, 1, 200, 5, 0, 20, 0] call BIS_fnc_findSafePos;
 	
 	//Create Task
-	[west, "dT1", ["Defend the target location at all cost! Make sure to bring building materials to fortify the area", "Defend location", ""], position _defendLocation, "AUTOASSIGNED", 1, true] call BIS_fnc_taskCreate;
+	[west, "dT1", ["Defend the target location at all cost! Make sure to bring building materials to fortify the area. Once you are there you have 3 minutes to prepare", "Defend location", ""], _defendPosition, "AUTOASSIGNED", 1, true] call BIS_fnc_taskCreate;
 	["dT1","defend"] call BIS_fnc_taskSetType;
 
 	//Create Maker
-	_defendMarker = createMarker ["DefendMarker", position _defendLocation];
+	_defendMarker = createMarker ["DefendMarker", _defendPosition];
 	_defendMarker setMarkerShape "ELLIPSE"; 
 	_defendMarker setMarkerSize [_defendRadius, _defendRadius];
 	_defendMarker setMarkerColor "ColorRed";
 	_defendMarker setMarkerAlpha 0.5;
 
 	//Create Flagpole
-	_defendFlag = "FlagPole_F" createVehicle position _defendLocation;
+	_defendFlag = "FlagPole_F" createVehicle _defendPosition;
 	_defendFlag setFlagTexture "\A3\Data_F\Flags\Flag_CSAT_CO.paa";
 	_defendFlag setVariable ["BON_flagSide", east, true];
 	[_defendFlag, 1, true] spawn BIS_fnc_animateFlag;
-	[_defendFlag, _defendLocation, _defendRadius] spawn BON_fnc_CheckArea; // Start Loop
+	[_defendFlag, _defendPosition, _defendRadius] spawn BON_fnc_CheckArea; // Start Loop
 	[_defendFlag, _captureSpeed] spawn BON_fnc_CaptureFlag;
-
+	
 	//Spawn Enemys
 	//...
 
 };
 
 BON_fnc_CheckArea = {
-	params["_flag", "_defendLocation", "_defendRadius"];
+	params["_flag", "_defendPosition", "_defendRadius"];
 	while {sleep 1; true} do {
 
 		CapturingSide = sideUnknown;
-		_allUnitsInArea = (position _defendLocation) nearEntities ["Man",  _defendRadius];
+		_allUnitsInArea = _defendPosition nearEntities ["Man",  _defendRadius];
 		_enemysInArea = ({side _x == east && alive _x} count _allUnitsInArea) > 0;
 		_allyInArea = ({side _x == west && alive _x} count _allUnitsInArea) > 0;
 
